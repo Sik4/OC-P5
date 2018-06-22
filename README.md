@@ -12,10 +12,11 @@ https://fr-en.openfoodfacts.org/category/answer
 
 - Retrieve the datas from the API, sort them and export them as a json file
 Clean the datas : looking for : 
-name : product_name_fr
-category : categories_prev_hierarchy (will see)
-ingredient : ingredients_text_fr or ingredients_text_debug
-link : link
+Name : product_name_fr
+Category : categories_prev_hierarchy (will see)
+Ingredient : ingredients_text_fr or ingredients_text_debug
+Link : link
+Shop :
 Energy : energy_value
 
 
