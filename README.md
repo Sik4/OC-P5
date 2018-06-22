@@ -9,6 +9,7 @@ Question : letting the choice of finding every category of aliment or list ?
 - Function that will form URL with the answers of the user
 If uiser input is standardized, form URL using template : 
 https://fr-en.openfoodfacts.org/category/answer
+CANCELED
 
 - Retrieve the datas from the API, sort them and export them as a json file
 Clean the datas : looking for : 
