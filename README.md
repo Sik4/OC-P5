@@ -3,7 +3,7 @@
 Plan of the application : 
 
 - Interface Function
-Ask a question, return alarm if answer is not standardized /n
+Ask a question, return alarm if answer is not standardized 
 Question : letting the choice of finding every category of aliment or list ? 
 
 - Function that will form URL with the answers of the user
