@@ -1,6 +1,10 @@
 import pymysql
 
+# WARNING You have to put the categories you want to work with BY HAND line 80 AFTER testing to see if they exist in
+# database
+
 # Create a connection object
+
 
 dbServerName = "localhost"
 
@@ -22,29 +26,25 @@ try:
 
     # SQL string to create a MySQL table
 
+    # dropping existing tables (reset program)
+
     cursorObject.execute("DROP TABLE IF EXISTS `category`;")
-    cursorObject.execute("DROP TABLE IF EXISTS `produit`;")
-    cursorObject.execute("DROP TABLE IF EXISTS `substitut`;")
+    cursorObject.execute("DROP TABLE IF EXISTS `product`;")
+    cursorObject.execute("DROP TABLE IF EXISTS `substitute`;")
 
-
+    # creating tables. be careful with data types
     sqlCreateTableCommand1 = "CREATE TABLE IF NOT EXISTS `category` (  `CategoryID` " \
                              "tinyint(4) NOT NULL AUTO_INCREMENT,  `ParentID` tinyint(4) NOT NULL,  `Name` varchar(" \
-                             "40) CHARACTER SET utf8 NOT NULL, PRIMARY KEY (`CategoryID`)) "
+                             "255) CHARACTER SET utf8 NOT NULL, PRIMARY KEY (`CategoryID`)) "
 
-    sqlCreateTableCommand2 = "CREATE TABLE IF NOT EXISTS `produit` ( `ProduitID` " \
-                             "tinyint(3) NOT NULL AUTO_INCREMENT,`CategoryID` tinyint(3) NOT NULL,`Name` varchar(40) " \
-                             "COLLATE utf8_unicode_ci NOT NULL,`Description` text COLLATE utf8_unicode_ci NOT NULL," \
-                             "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`Shop` varchar(40) COLLATE "\
-                             "utf8_unicode_ci NOT NULL,`EnergyValue` smallint(5) NOT NULL, "  \
+    sqlCreateTableCommand2 = "CREATE TABLE IF NOT EXISTS `product` ( `ProduitID` " \
+                             "tinyint(3) NOT NULL AUTO_INCREMENT,`CategoryID` tinyint(3) NOT NULL,`Name` varchar(255) "\
+                             "COLLATE utf8_unicode_ci NOT NULL,`Ingredient` text COLLATE utf8_unicode_ci NOT NULL," \
+                             "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`EnergyValue` smallint(5) NOT NULL,"\
                              "PRIMARY KEY (`ProduitID`)) "
 
-
-    sqlCreateTableCommand3 = "CREATE TABLE IF NOT EXISTS `substitut` (`SubstitutID` tinyint(3) NOT NULL " \
-                             "AUTO_INCREMENT,`ProduitID` tinyint(3) NOT NULL,`Name` varchar(40) COLLATE " \
-                             "utf8_unicode_ci NOT NULL,`Description` text COLLATE utf8_unicode_ci NOT NULL," \
-                             "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`Shop` varchar(40) COLLATE " \
-                             "utf8_unicode_ci NOT NULL,`EnergyValue` smallint(5) NOT NULL, "\
-                             "PRIMARY KEY (`SubstitutID`))"
+    sqlCreateTableCommand3 = "CREATE TABLE IF NOT EXISTS `substitute` (`SubstitutID` tinyint(3) NOT NULL " \
+                             "AUTO_INCREMENT,`ProduitID` tinyint(3) NOT NULL, PRIMARY KEY (`SubstitutID`))"
 
     # Execute the sqlQuery
 
@@ -52,10 +52,13 @@ try:
     cursorObject.execute(sqlCreateTableCommand2)
     cursorObject.execute(sqlCreateTableCommand3)
 
-    cursorObject.execute("ALTER TABLE `produit`  ADD CONSTRAINT `FK_CategoryID` FOREIGN KEY (`CategoryID`) REFERENCES `category` (`CategoryID`);")
+    cursorObject.execute(
+        "ALTER TABLE `product`  ADD CONSTRAINT `FK_CategoryID` FOREIGN KEY (`CategoryID`) REFERENCES `category` ("
+        "`CategoryID`);")
 
-    cursorObject.execute("ALTER TABLE `substitut`  ADD CONSTRAINT `FK_ProduitID` FOREIGN KEY (`ProduitID`) REFERENCES `produit` (`ProduitID`);")
-
+    cursorObject.execute(
+        "ALTER TABLE `substitute`  ADD CONSTRAINT `FK_ProduitID` FOREIGN KEY (`ProduitID`) REFERENCES `product` ("
+        "`ProduitID`);")
 
     # List the tables using SQL command
 
@@ -73,10 +76,12 @@ try:
         print(row)
 
     # Insert rows into the MySQL Table
+    # inserting categories previously tested manually
 
-    #insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,2,\"Einstein\")"
+    insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Pizza\"), (2,1,\"Chips\")," \
+                      " (3,2,\"Desserts\"), (4,2,\"Boissons\"), (5,3, \"fish\")"
 
-    #cursorObject.execute(insertStatement)
+    cursorObject.execute(insertStatement)
 
     # SQL Query to retrieve the rows
 
@@ -92,8 +97,6 @@ try:
         print(row)
 
     connectionObject.commit()
-
-
 
 except Exception as e:
 
