@@ -43,17 +43,21 @@ def __menu__():
 
     a = len(key)
     choice = 0
+
     try:
         choice = int(input("\n enter a choice between 1 and {} :  ".format(a)))
         print("\n")
+
     except ValueError:
 
         print("\n a number, like one...two....three...")
         print("\n")
+        exit()
 
     if choice not in range(1, a + 1):
         print("\n remove gloves before trying a number... ")
         print("\n")
+        exit()
 
     choix = menu[choice - 1]
     produit: str = choix[1]

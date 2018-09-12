@@ -79,7 +79,7 @@ try:
     # inserting categories previously tested manually
 
     insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Pizza\"), (2,1,\"Chips\")," \
-                      " (3,2,\"Desserts\"), (4,2,\"Boissons\"), (5,3, \"fish\")"
+                      " (3,2,\"Gateaux\"), (4,2,\"Boissons\"), (5,3, \"fish\")"
 
     cursorObject.execute(insertStatement)
 
