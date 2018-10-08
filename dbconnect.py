@@ -38,10 +38,10 @@ try:
                              "255) CHARACTER SET utf8 NOT NULL, PRIMARY KEY (`CategoryID`)) "
 
     sqlCreateTableCommand2 = "CREATE TABLE IF NOT EXISTS `product` ( `ProduitID` " \
-                             "tinyint(3) NOT NULL AUTO_INCREMENT,`CategoryID` tinyint(3) NOT NULL,`Name` varchar(255) "\
+                             "smallint(7) NOT NULL AUTO_INCREMENT,`CategoryID` tinyint(3) NOT NULL,`Name` varchar(255) "\
                              "COLLATE utf8_unicode_ci NOT NULL,`Ingredient` text COLLATE utf8_unicode_ci NOT NULL," \
-                             "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`EnergyValue` smallint(5) NOT NULL,"\
-                             "PRIMARY KEY (`ProduitID`)) "
+                             "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`EnergyValue` varchar(255)" \
+                             "COLLATE utf8_unicode_ci NOT NULL, PRIMARY KEY (`ProduitID`)) "
 
     sqlCreateTableCommand3 = "CREATE TABLE IF NOT EXISTS `substitute` (`SubstitutID` tinyint(3) NOT NULL " \
                              "AUTO_INCREMENT,`ProduitID` tinyint(3) NOT NULL, PRIMARY KEY (`SubstitutID`))"
@@ -78,8 +78,10 @@ try:
     # Insert rows into the MySQL Table
     # inserting categories previously tested manually
 
-    insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Pizza\"), (2,1,\"Chips\")," \
-                      " (3,2,\"Gateaux\"), (4,2,\"Boissons\"), (5,3, \"fish\")"
+    insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Pizzas\"), (2,1,\"Chips\")," \
+                      " (3,2,\"Gateaux\"), (4,2,\"Teas\"), (5,3, \"fish\")"
+
+    # Popcorn works fine
 
     cursorObject.execute(insertStatement)
 

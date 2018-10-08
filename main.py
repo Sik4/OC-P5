@@ -28,53 +28,60 @@ while True:
     if len(produit) < 1:
         break
 
-    url = serviceurl + produit + '/1.json'
-    print(url)
-    uh = urllib.request.urlopen(url)
-    data = uh.read()
-    # print ('Retrieved', len(data), 'characters')
+    urls = [serviceurl + produit + '/{}.json'.format(p) for p in range (1,7)]
 
-    js = json.loads(data)
+    for url in urls:
+        print(url)
+        uh = urllib.request.urlopen(url)
+        data = uh.read().decode('utf-8')
+        # print ('Retrieved', len(data), 'characters')
 
-    x = js['products']
+        js = json.loads(data)
 
-    for item in x:
+        x = js['products']
 
-        cursorObject = connectionObject.cursor()
+        for item in x:
 
-        try:
-            name = item["product_name_fr"]
-            nametwo = item["ingredients_text"]
-            namethree = item["nutriments"]["energy_value"]
-            namefour = item["link"]
-            # parcing all special characters
-            newname = re.escape(name)
-            # replacing non problematic characters by their clean forms
-            # '_'were around name of ingredients that should be in bold in CMS
-            newnametwo = re.escape(nametwo.replace('_', ''))
-            # intermediate verification
-            # print(newname)
-            # print(newnametwo)
-            # parcing \% in final database before inserting datas
-            insertStatement = "INSERT INTO product (CategoryID, Name, Ingredient, Link,  EnergyValue) VALUES (" \
-                              "'1', '" + newname + " '   ,'" + newnametwo.replace('\%', '%') + "' , '" + namefour +  \
-                              "','" + namethree + "') "
-            cursorObject.execute(insertStatement)
-            # print('\n')
+            cursorObject = connectionObject.cursor()
 
-            connectionObject.commit()
+            try:
+                default = 'missing value'
+                # name = item["product_name_fr"]
+                name = item.get('product_name_fr', default)
+                nametwo = item.get('ingredients_text', default)
+                namethree = item["nutrition_grades_tags"]
+                namefour = item["link"]
+                # parcing all special characters
+                newname = name.replace('œ', 'oe')
+                enewname = re.escape(newname)
+                print(enewname)
+                # replacing non problematic characters by their clean forms
+                # '_'were around name of ingredients that should be in bold in CMS
+                newnametwo = re.escape(nametwo.replace('_', ''))
+                newnamethree = namethree[0]
+                # intermediate verification
+                # print(newname)
+                # print(newnametwo)
+                # parcing \% in final database before inserting datas
+                insertStatement = "INSERT INTO product (CategoryID, Name, Ingredient, Link,  EnergyValue) VALUES (" \
+                                  "'1', '" + enewname + " '   ,'" + newnametwo.replace('\%', '%') + "' , '" + namefour +\
+                                  "','" + newnamethree + "') "
+                cursorObject.execute(insertStatement)
+                # print('\n')
 
-        # finally:
+                connectionObject.commit()
 
-            # connectionObject.close()
+            # finally:
 
-        except KeyError as e:
-            # printing KeyError : careful, printing only one of the probably two ErrorS.
-            print("KeyError on : ")
-            print(str(e))
-            # clean end of the loop when file is at the end
-        else:
-            continue
+                # connectionObject.close()
+
+            except KeyError as e:
+                # printing KeyError : careful, printing only one of the probably two ErrorS.
+                print("KeyError on : ")
+                print(str(e))
+                # clean end of the loop when file is at the end
+            else:
+                continue
 
     sqlQuery = "SELECT ProduitID, Name, EnergyValue FROM product"
 
