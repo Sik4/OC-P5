@@ -3,6 +3,7 @@ import json
 import pymysql
 import re
 from menu import __menu__
+from menu import __cleartable__
 
 
 dbServerName = "localhost"
@@ -18,17 +19,18 @@ charSet = "utf8mb4"
 connectionObject = pymysql.connect(db=dbName, user=dbUser, passwd=dbPassword, host=dbServerName)
 
 # Test creation url
+cleartable= __cleartable__()
 produit = __menu__()
-
 
 serviceurl = 'https://fr-en.openfoodfacts.org/category/'
 # test : url = serviceurl + produit + '.json'
+
 
 while True:
     if len(produit) < 1:
         break
 
-    urls = [serviceurl + produit + '/{}.json'.format(p) for p in range (1,7)]
+    urls = [serviceurl + produit + '/{}.json'.format(p) for p in range(1, 10)]
 
     for url in urls:
         print(url)
@@ -53,7 +55,7 @@ while True:
                 namefour = item["link"]
                 # parcing all special characters
                 newname = name.replace('œ', 'oe')
-                enewname = re.escape(newname)
+                enewname = re.escape(newname.strip())
                 print(enewname)
                 # replacing non problematic characters by their clean forms
                 # '_'were around name of ingredients that should be in bold in CMS
@@ -63,8 +65,8 @@ while True:
                 # print(newname)
                 # print(newnametwo)
                 # parcing \% in final database before inserting datas
-                insertStatement = "INSERT INTO product (CategoryID, Name, Ingredient, Link,  EnergyValue) VALUES (" \
-                                  "'1', '" + enewname + " '   ,'" + newnametwo.replace('\%', '%') + "' , '" + namefour +\
+                insertStatement = "REPLACE INTO product (CategoryID, Name, Ingredient, Link,  EnergyValue) VALUES (" \
+                                  "'1', '" + enewname + " ' ,'" + newnametwo.replace('\%', '%') + "' , '" + namefour +\
                                   "','" + newnamethree + "') "
                 cursorObject.execute(insertStatement)
                 # print('\n')
@@ -83,7 +85,7 @@ while True:
             else:
                 continue
 
-    sqlQuery = "SELECT ProduitID, Name, EnergyValue FROM product"
+    sqlQuery = "SELECT DISTINCT ProduitID, Name, EnergyValue FROM product"
 
     # Fetch all the rows - for the SQL Query
 
@@ -119,35 +121,44 @@ while True:
 
     choix2 = favorite[choice2 - 1]
     produit2: str = choix2[1]
+    eproduit2 = re.escape(produit2)
+    print(eproduit2)
 
     # print(produit2)
     # return produit2
     print("Votre choix / Le choix le moins calorique")
-    sqlQuery = "SELECT ProduitID, Name, EnergyValue FROM `product` WHERE Name = '" + produit2 + "' "\
-               " UNION SELECT ProduitID, Name, MIN(EnergyValue) FROM `product`WHERE CategoryID = 1"
+    sqlQuery = "SELECT ProduitID, Name, EnergyValue FROM `product` WHERE Name = '" + eproduit2 + "' "\
+               "UNION SELECT ProduitID, Name, EnergyValue FROM `product`WHERE CategoryID = 1 AND EnergyValue=(SELECT "\
+               "MIN(EnergyValue) FROM `product`)"
 
     cursorObject.execute(sqlQuery)
     results = cursorObject.fetchall()
     sagesse = []
+    nbrsolutions = 0
     for result in results:
         sagesse.append(result)
-        print(result)
+        nbrsolutions = nbrsolutions +1
+        print(nbrsolutions - 1, result)
 
-    choice3 = int(input("\n 0 pour garder votre ancien choix, 1 pour prendre le choix de la sagesse \n"))
+    choice3 = int(input("\n 0 pour garder votre ancien choix, entre 1 et  " +
+                        "{} pour prendre le choix de la sagesse \n".format(nbrsolutions - 1)))
 
     if choice3 == 0:
         defchoice = sagesse[0]
+        print(defchoice)
         insertStatement = "INSERT INTO substitute (ProduitID) VALUES ('" + str(defchoice[0]) + "')"
         cursorObject.execute(insertStatement)
-        print(defchoice)
+        print("Votre choix est sauvegardé", defchoice)
 
-    elif choice3 == 1:
-        defchoice = sagesse[1]
+    elif choice3 != 0:
+        defchoice = sagesse[choice3]
+        print(defchoice)
         insertStatement = "INSERT INTO substitute (ProduitID) VALUES ('" + str(defchoice[0]) + "')"
         cursorObject.execute(insertStatement)
-        print(defchoice)
+        print("Votre choix est sauvegardé", defchoice)
 
     else:
         print("try again")
 
     exit()
+

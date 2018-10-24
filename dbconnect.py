@@ -43,8 +43,8 @@ try:
                              "`Link` varchar(255) COLLATE utf8_unicode_ci NOT NULL,`EnergyValue` varchar(255)" \
                              "COLLATE utf8_unicode_ci NOT NULL, PRIMARY KEY (`ProduitID`)) "
 
-    sqlCreateTableCommand3 = "CREATE TABLE IF NOT EXISTS `substitute` (`SubstitutID` tinyint(3) NOT NULL " \
-                             "AUTO_INCREMENT,`ProduitID` tinyint(3) NOT NULL, PRIMARY KEY (`SubstitutID`))"
+    sqlCreateTableCommand3 = "CREATE TABLE IF NOT EXISTS `substitute` (`SubstitutID` smallint(7) NOT NULL " \
+                             "AUTO_INCREMENT,`ProduitID` smallint(7) NOT NULL, PRIMARY KEY (`SubstitutID`))"
 
     # Execute the sqlQuery
 
@@ -78,8 +78,8 @@ try:
     # Insert rows into the MySQL Table
     # inserting categories previously tested manually
 
-    insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Pizzas\"), (2,1,\"Chips\")," \
-                      " (3,2,\"Gateaux\"), (4,2,\"Teas\"), (5,3, \"fish\")"
+    insertStatement = "INSERT INTO Category (CategoryID, ParentID, Name) VALUES (1,1,\"Breakfasts\"),"\
+                      "(2,2,\"Chocolates\"),(3,3,\"Pizzas\"), (4,4,\"Sauces\"), (5,5, \"Fishes\")"
 
     # Popcorn works fine
 

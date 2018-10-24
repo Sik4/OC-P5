@@ -5,18 +5,23 @@ import pymysql
 """OC P5"""
 """Files : """
 
-# definition of function transforming category table into menu
+# connection to database
+
+dbServerName = "localhost"
+
+dbUser = "root"
+
+dbPassword = ""
+
+dbName = "p5oc"
+
+charSet = "utf8mb4"
+
+connectionObject = pymysql.connect(db=dbName, user=dbUser, passwd=dbPassword, host=dbServerName)
 
 
 def __menu__():
     # connect to database :
-    dbServerName = "localhost"
-    dbUser = "root"
-    dbPassword = ""
-    dbName = "p5oc"
-    charSet = "utf8mb4"
-
-    connectionObject = pymysql.connect(db=dbName, user=dbUser, passwd=dbPassword, host=dbServerName)
 
     print("\n This program will help you choose an healthy meal")
 
@@ -64,3 +69,9 @@ def __menu__():
 
     print(produit)
     return produit
+
+
+def __cleartable__ ():
+    cursorObject = connectionObject.cursor()
+    cursorObject.execute("TRUNCATE TABLE `product`;")
+    cursorObject.execute("TRUNCATE TABLE `substitute`;")
